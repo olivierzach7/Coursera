@@ -1,0 +1,14 @@
+Data from various text files from the HAR dataset are merged using the rbind function
+Columns with mean and standard deviation are extracted from the dataset
+Column names are updated from the features.txt
+Activity names are inputted into the dataset from activity_labels.txt
+A final dataset is produced - taking the average for each subject and activity type - and outputted to averages_data.txt
+
+
+x_train, y_train, x_test, y_test, subject_train and subject_test contain the data from the downloaded files
+datax, datay and datasub merge the the test and training files together
+feat and extractfeat variable extract mean and standard deviation from features.txt to append to datax
+process is repeated for datay but with activity_labels.txt
+datacomb is the total dataset - combining datax, datay, and datasub - all manipulated with previous analysis steps
+avgcalc calculated the average for each subject and activity
+exptable contains the write function of the final dataset
