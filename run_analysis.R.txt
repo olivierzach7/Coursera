@@ -1,0 +1,100 @@
+# install needed packages
+library(plyr)
+library(reshape2)
+
+#name zip file
+
+file <- "getdata_dataset.zip"
+
+
+# download ZIP file and unzip from working directory
+if(!file.exists(file)){
+  fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip "
+  download.file(fileURL, file, method = "curl")
+}
+
+if(!file.exists("UCI HAR Dataset")){
+  unzip(file)
+}
+
+# input / write test and training data sets
+
+trainx <- read.table("X_train.txt")
+trainy <- read.table("y_train.txt")
+trainsub <- read.table("subject_test.txt")
+
+
+testx <- read.table("X_test.txt")
+testy <- read.table("y_test.txt")
+testsub <- read.table("subject_test.txt")
+
+# merge test and training datasets together
+
+datax <- rbind(trainx, testx)
+datay <- rbind(trainy, testy)
+datasub <- rbind(trainsub, testsub)
+
+
+
+#extract mean and standard deviation from each data measurement
+
+feat <- read.table("features.txt")
+extractfeat <- grep("-(mean|std)\\(\\)",feat[,2])
+
+datax <- datax[,extractfeat]
+
+#rename columns in the features dataset
+
+names(datax) <- feat[extractfeat,2]
+
+
+
+#rename columns in the activites dataset
+
+act <- read.table("activity_labels.txt")
+
+datay[,1] <- act[datay[,1],2]
+
+names(datay) <- "activity"
+
+
+
+#rename columns in the subject dataset
+
+names(datasub) <- "subject"
+
+#combine all datasets together
+
+datacomb <- cbind(datax,datay,datasub)
+
+
+
+#create a second tidy dataset with average calculation for each activity and subject
+
+avgcalc <- ddply(datacomb,.(subject, activity), function(x) colMeans(x[,1:66]))
+
+exptable <- write.table(avgcalc, "GCD_project.txt", rown.name = FALSE)
+
+exptable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
